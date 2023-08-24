@@ -19,6 +19,14 @@ npm i axios
 ### # React component
 
 - React slick: carousel component \
-npm install react-slick --save
+ npm install react-slick slick-carousel
 - react-router-dom \
-npm i react-router-dom
+ npm i react-router-dom
+- paginate \
+ npm install react-paginate
+- React icon \
+ npm i @fortawesome/fontawesome-svg-core \
+ npm i @fortawesome/free-solid-svg-icons @fortawesome/free-regular-svg-icons @fortawesome/free-brands-svg-icons \
+ npm i @fortawesome/react-fontawesome
+- React-Quill: rich-text editor \
+ npm install react-quill --save

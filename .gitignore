@@ -1,8 +1,11 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,react,windows,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,react,windows,node
 
+
+
 ### Node ###
 # Logs
+
 logs
 *.log
 npm-debug.log*
@@ -198,5 +201,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+App.js
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,react,windows,node
