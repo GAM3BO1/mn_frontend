@@ -2,51 +2,84 @@ import React, { useState, useEffect } from "react";
 import "./MyContentCardList.css";
 import jwt_decode from "jwt-decode";
 import MyPageCard from "./MyPageCard";
+import MyPartyCard from "./MyPartyCard";
 import axios from "axios";
 import Pagination from "../../lib/Pagination.jsx";
-import { Link } from "react-router-dom";
 
 const MyContentCardList = () => {
-  const [cards, setCards] = useState([]);
+  const [recipeCards, setRecipeCards] = useState([]); // 레시피 데이터 저장
+  const [partyCards, setPartyCards] = useState([]); // 축하파티 데이터 저장
   const [currentPage, setCurrentPage] = useState(0);
   const [totalRecipeCount, setTotalRecipeCount] = useState(0);
+  const [totalPartyCount, setTotalPartyCount] = useState(0);
   const cardsPerPage = 9;
   const userToken = localStorage.getItem("login-token");
-  const [activeButton, setActiveButton] = useState("my-recipe-button");
+  const [buttonType, setButtonType] = useState("recipe");
 
-  useEffect(() => {
+  const fetchRecipeData = () => {
     if (userToken) {
       const decodedToken = jwt_decode(userToken);
-
       if (decodedToken && decodedToken.userNum) {
         const userNum = decodedToken.userNum;
 
         axios
           .get(`/recipe/myList?userNum=${userNum}`)
           .then((response) => {
-            console.log(response.data);
-            setCards(response.data);
+            setRecipeCards(response.data);
             setTotalRecipeCount(response.data.length);
           })
           .catch((error) => {
-            console.error("Error fetching data:", error);
+            console.error("Error fetching recipe data:", error);
           });
       } else {
         console.error("토큰에서 userNum 정보를 찾을 수 없습니다.");
       }
     }
-  }, [currentPage]);
+  };
+
+  const fetchPartyData = () => {
+    if (userToken) {
+      const decodedToken = jwt_decode(userToken);
+      if (decodedToken && decodedToken.userNum) {
+        const userNum = decodedToken.userNum;
+
+        axios
+          .get(`/party/myList/${userNum}`)
+          .then((response) => {
+            setPartyCards(response.data);
+            setTotalPartyCount(response.data.length);
+          })
+          .catch((error) => {
+            console.error("Error fetching party data:", error);
+          });
+      } else {
+        console.error("토큰에서 userNum 정보를 찾을 수 없습니다.");
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (buttonType === "recipe") {
+      fetchRecipeData();
+    } else {
+      fetchPartyData();
+    }
+  }, [buttonType]);
+
+  const handleButtonClick = (type) => {
+    setButtonType(type);
+    setCurrentPage(0);
+  };
 
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
   };
 
   const offset = currentPage * cardsPerPage;
-  const currentCards = cards.slice(offset, offset + cardsPerPage);
-
-  const handleButtonClick = (buttonType) => {
-    // 버튼 클릭 로직 추가
-  };
+  const currentCards =
+    buttonType === "recipe"
+      ? recipeCards.slice(offset, offset + cardsPerPage)
+      : partyCards.slice(offset, offset + cardsPerPage);
 
   return (
     <div className="my-page-card-list container">
@@ -54,31 +87,42 @@ const MyContentCardList = () => {
         <div>
           <button
             className={`my-recipe-button ${
-              activeButton === "my-recipe-button" ? "active" : ""
+              buttonType === "recipe" ? "active" : ""
             }`}
-            onClick={() => handleButtonClick("my-recipe-button")}
+            onClick={() => handleButtonClick("recipe")}
           >
             레시피
           </button>
           <button
             className={`my-party-button ${
-              activeButton === "my-party-button" ? "active" : ""
+              buttonType === "party" ? "active" : ""
             }`}
-            onClick={() => handleButtonClick("my-party-button")}
+            onClick={() => handleButtonClick("party")}
           >
             축하파티
           </button>
         </div>
-        <p className="my-page-list-total-count">전체 {totalRecipeCount} 개 </p>
+        <p className="my-page-list-total-count">
+          전체 {buttonType === "recipe" ? totalRecipeCount : totalPartyCount} 개
+        </p>
       </div>
       <div className="my-page-card-list">
-        {Array.isArray(currentCards) &&
-          currentCards.map((card, index) => (
-            <MyPageCard key={index} card={card} showTitle={true} />
-          ))}
+        {currentCards.map((card, index) => (
+          <div key={index}>
+            {buttonType === "recipe" ? (
+              <MyPageCard card={card} showTitle={true} />
+            ) : (
+              <MyPartyCard card={card} showTitle={true} />
+            )}
+          </div>
+        ))}
       </div>
       <Pagination
-        pageCount={Math.ceil(cards.length / cardsPerPage)}
+        pageCount={Math.ceil(
+          buttonType === "recipe"
+            ? totalRecipeCount / cardsPerPage
+            : totalPartyCount / cardsPerPage
+        )}
         onPageChange={handlePageChange}
       />
     </div>

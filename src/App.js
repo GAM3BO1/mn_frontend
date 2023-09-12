@@ -31,7 +31,7 @@ function App() {
   };
   return (
     <BrowserRouter>
-      <Header currentToken={token} />
+      <Header currentToken={token} tokenChanged={handleTokenChanged} />
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/noticeBoard" element={<NoticeBoard />}></Route>
