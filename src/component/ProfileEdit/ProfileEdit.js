@@ -67,7 +67,7 @@ const ProfileEdit = () => {
 
   const handleProfileUpdate = (e) => {
     e.preventDefault();
-    const userToken = localStorage.getItem("login-token");
+    const userToken = localStorage.getItem('login-token');
     const decodedToken = jwt_decode(userToken);
     const userNum = decodedToken.userNum;
     console.log(userNum);
@@ -96,7 +96,7 @@ const ProfileEdit = () => {
         // 새로운 토큰을 받아와서 상태로 설정
         const newToken = response.data;
         setNewToken(newToken);
-        localStorage.setItem("login-token", newToken);
+        localStorage.setItem('login-token', newToken);
         console.log(response.data);
         // 성공 시 메시지 표시 및 마이페이지로 이동
         alert("프로필 정보가 업데이트되었습니다.");
@@ -114,7 +114,7 @@ const ProfileEdit = () => {
 
   // 컴포넌트가 마운트될 때 사용자의 이메일을 로컬 스토리지에서 불러오기
   useEffect(() => {
-    const newToken = localStorage.getItem("login-token");
+    const newToken = localStorage.getItem('login-token');
     if (newToken) {
       // 토큰 해석
       const decodedToken = jwt_decode(newToken); // jwt 모듈을 사용하여 토큰 해석

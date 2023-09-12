@@ -19,7 +19,7 @@ function Header({ currentToken, tokenChanged }) {
   }, [currentToken]);
 
   const logout = () => {
-    localStorage.removeItem("login-token");
+    localStorage.removeItem('login-token');
     tokenChanged(null);
     alert("로그아웃되었습니다.");
   };
@@ -36,6 +36,7 @@ function Header({ currentToken, tokenChanged }) {
       </li>
     </ul>
   );
+  
   const logoutLink = (
     <ul>
       <li>
@@ -68,14 +69,14 @@ function Header({ currentToken, tokenChanged }) {
           <nav className="main-nav">
             <ul>
               <li>
-                <Link
-                  className={`navbar ${
-                    location.pathname === "/" ? "active" : ""
-                  }`}
-                  to={"/"}
-                >
-                  홈
-                </Link>
+              <Link
+                className={`navbar ${
+                  location.pathname === "/" ? "active" : ""
+                }`}
+                to={"/"}
+              >
+                홈
+              </Link>
               </li>
               <li>
                 <Link
@@ -112,7 +113,9 @@ function Header({ currentToken, tokenChanged }) {
         </div>
 
         <div className="header-right">
-          <nav className="sub-nav">{currentToken ? loginLink : logoutLink}</nav>
+          <nav className="sub-nav">
+            {currentToken ? loginLink : logoutLink}
+          </nav>
           <form onSubmit={searchSubmit}>
             <div className="search">
               <input

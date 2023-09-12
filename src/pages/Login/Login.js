@@ -4,7 +4,7 @@ import "./Login.css"; // 기존 스타일 파일 임포트
 import jwt_decode from "jwt-decode";
 import axios from "axios";
 
-const Login = ({ tokenChanged }) => {
+const Login = ({tokenChanged}) => {
   const [email, setUserEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -37,17 +37,30 @@ const Login = ({ tokenChanged }) => {
   }, [location.search]);
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+      e.preventDefault();
 
-    if (!emailCheck(email)) {
-      setEmailError("올바른 이메일 형식이 아닙니다.");
-      return;
-    }
+      if (!emailCheck(email)) {
+        setEmailError("올바른 이메일 형식이 아닙니다.");
+        return;
+      }
 
-    if (password.match(passwordRegEx) === null) {
-      setPasswordError("비밀번호 형식을 확인해주세요");
-      return;
-    }
+      if (password.match(passwordRegEx) === null) {
+        setPasswordError("비밀번호 형식을 확인해주세요");
+        return;
+      }
+
+      try {
+        // 실제 로그인 요청 처리 (axios를 사용하여 백엔드 API 호출)
+        const response = await axios.post("/auth/login", {
+          userEmail: email,
+          userPassword: password,
+        });
+        // 로컬스토리지에 token 값 저장
+        const token = response.data.token; // 응답 본문에서 토큰 추출
+        localStorage.setItem("login-token", token); // 토큰 저장
+        tokenChanged(token);
+        const decodedToken = jwt_decode(token);
+        console.log(decodedToken.roles);
 
     try {
       // 실제 로그인 요청 처리 (axios를 사용하여 백엔드 API 호출)
@@ -71,12 +84,11 @@ const Login = ({ tokenChanged }) => {
           alert("로그인되었습니다!");
           navigate("/"); // 일반 사용자 페이지로 이동
         }
+      } catch (error) {
+        alert("로그인 실패!");
+        console.error("로그인 오류:", error);
       }
-    } catch (error) {
-      alert("로그인 실패!");
-      console.error("로그인 오류:", error);
-    }
-  };
+    };
 
   const handleEmailChange = (e) => {
     setUserEmail(e.target.value);
