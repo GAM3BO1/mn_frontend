@@ -1,7 +1,7 @@
 import React from "react";
 import MyPageNav from "../../component/MyPageNav/MyPageNav";
 import Profile from "../../component/Profile/Profile";
-import MyCommentCardList from "../../component/CardList/MyCommentList";
+import MyCommentCardList from "../../component/CardList/MyCommentCardList";
 
 const MyComment = () => {
   return (

@@ -20,7 +20,7 @@ const RecipeCardList = () => {
     // 추가
     
     useEffect(() => { 
-        axios.get('http://localhost:9999/recipe/list')
+        axios.get('/party/list')
         .then(response => {
             setCards(response.data);
             setTotalRecipeCount(response.data.length); // 레시피 개수 설정

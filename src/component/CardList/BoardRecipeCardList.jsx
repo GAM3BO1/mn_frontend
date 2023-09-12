@@ -15,11 +15,11 @@ const BoardRecipeCardList = () => {
     const [totalRecipeCount, setTotalRecipeCount] = useState(0);
     //전체 글의 개수를 표시
 
-    const cardsPerPage = 6;
+    const cardsPerPage = 6; 
     //한 페이지에 표시할 카드의 수를 정의 
     // 추가
 
-    useEffect(() => { 
+    useEffect(() => {  
         axios.get('/recipe/list')
         .then(response => {
             setCards(response.data);
