@@ -29,32 +29,35 @@ function App() {
         console.log("새 토큰: " + newToken);
         setToken(newToken);
     }
-
     return (
-        <BrowserRouter>
-            <Header currentToken={token} tokenChanged={handleTokenChanged}/>
-            <Routes>
-                <Route path="/" element={<MainPage />} />
-                <Route path="/noticeBoard" element={<NoticeBoard />}></Route>
-                <Route path="/noticeDetail" element={<NoticeDetail />}></Route>
-                <Route path="/noticeWrite" element={<NoticeWrite/>}></Route>
-                <Route path="/recipeBoard" element={<RecipeBoard />} />
-                <Route path="/recipeDetail" element={<RecipeDetail />} />
-                <Route path="/recipeWrite" element={<RecipeWrite />} />
-                <Route path="/partyBoard" element={<PartyBoard />} />
-                <Route path="/partyDetail" element={<PartyDetail />} />
-                <Route path="/partyWrite" element={<PartyWrite/>}></Route>
-                <Route path="/login" element={<Login tokenChanged={handleTokenChanged}/>} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/MyPage" element={<MyPage />} />
-                <Route path="/resetPwd" element={<ResetPwd />} />
-                <Route path="/myContent" element={<MyContent />} />
-                <Route path="/myComment" element={<MyComment />} />
-                <Route path="/myRecipeBoard" element={<MyRecipe />} />
-                <Route path="/petRecipeBoard" element={<PetRecipeBoard/>} />
-            </Routes>
-            <Footer />
-        </BrowserRouter>
+      <BrowserRouter>
+        <Header currentToken={token} tokenChanged={handleTokenChanged} />
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/noticeBoard" element={<NoticeBoard />}></Route>
+          <Route path="/noticeDetail" element={<NoticeDetail />}></Route>
+          <Route path="/noticeWrite" element={<NoticeWrite />}></Route>
+          <Route path="/recipeBoard" element={<RecipeBoard />} />
+          <Route path="/recipeDetail" element={<RecipeDetail />} />
+          <Route path="/recipeWrite" element={<RecipeWrite />} />
+          <Route path="/partyBoard" element={<PartyBoard />} />
+          <Route path="/partyDetail" element={<PartyDetail />} />
+          <Route path="/partyWrite" element={<PartyWrite />}></Route>
+          <Route
+            path="/login"
+            element={<Login tokenChanged={handleTokenChanged} />}
+          />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/myPage" element={<MyPage />} />
+          <Route path="/resetPwd" element={<ResetPwd />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/withDrawal" element={<WithDrawal />} />
+          <Route path="/changePwd" element={<ChangePwd />} />
+          <Route path="/myContent" element={<MyContent />} />
+          <Route path="/myComment" element={<MyComment />} />
+        </Routes>
+        <Footer />
+      </BrowserRouter>
     );
 }
 

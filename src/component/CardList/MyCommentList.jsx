@@ -1,72 +1,86 @@
 import React, { useState, useEffect } from "react";
 import "./MyComment.css";
 import axios from "axios";
-import { Link } from "react-router-dom"; // 라우터에서 Link 컴포넌트 임포트
+import { Link } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 
 const MyCommentList = () => {
   const [cards, setCards] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [totalRecipeCount, setTotalRecipeCount] = useState(0);
+  const [totalCommentCount, setTotalCommentCount] = useState(0);
   const cardsPerPage = 9;
-  const [activeButton, setActiveButton] = useState("my-rccomment-button");
   const userToken = localStorage.getItem("login-token");
+  const [buttonType, setButtonType] = useState("recipe"); // 기본값은 'recipe'
 
-  useEffect(() => {
+  const fetchData = async (type) => {
     if (userToken) {
       const decodedToken = jwt_decode(userToken);
 
       if (decodedToken && decodedToken.userNum) {
         const userNum = decodedToken.userNum;
 
-        // 첫 번째 axios 호출: 사용자의 userNum을 백엔드에 전달하여 rcpNum 배열을 받아옵니다.
-        axios
-          .get(`/recipe/rcpNum?userNum=${userNum}`)
-          .then((rcpResponse) => {
-            const rcpNumArray = rcpResponse.data;
-            console.log(rcpNumArray);
+        let url, params;
 
-            // 각각의 rcpNum에 대해 데이터를 가져옵니다.
-            const fetchDataForRcpNum = async () => {
-              const promises = rcpNumArray.map(async (rcpNum) => {
-                const response = await axios.get(
-                  `/recipe/reply/myRplList?userNum=${userNum}&rcpNum=${rcpNum}`
+        if (type === "party") {
+          url = `/party/postId/${userNum}`;
+          params = { userNum };
+        } else {
+          url = `/recipe/rcpNum?userNum=${userNum}`;
+        }
+
+        try {
+          const rcpResponse = await axios.get(url, { params });
+          const rcpNumArray = rcpResponse.data;
+          console.log(rcpNumArray);
+
+          const fetchDataForRcpNum = async () => {
+            const promises = rcpNumArray.map(async (id) => {
+              let response;
+              if (type === "party") {
+                response = await axios.get(
+                  `/party/comment/myRplList/${userNum}/${id}`
                 );
-                console.log(response.data);
-                return response.data;
-              });
+              } else {
+                response = await axios.get(
+                  `/recipe/reply/myRplList?userNum=${userNum}&rcpNum=${id}`
+                );
+              }
+              console.log(response.data);
+              return response.data;
+            });
 
-              // 모든 데이터를 병렬로 가져온 후 합칩니다.
-              Promise.all(promises)
-                .then((responses) => {
-                  // responses는 각 rcpNum에 대한 데이터 배열을 포함합니다.
-                  const allData = responses.flat(); // 배열을 하나로 합칩니다.
-                  console.log(allData);
-                  setCards(allData);
-                  setTotalRecipeCount(allData.length);
-                })
-                .catch((error) => {
-                  console.error("Error fetching data:", error);
-                });
-            };
-            // fetchDataForRcpNum 함수 실행
-            fetchDataForRcpNum();
-          })
-          .catch((error) => {
-            console.error("Error fetching rcpNum:", error);
-          });
+            try {
+              const responses = await Promise.all(promises);
+              const allData = responses.flat();
+              console.log(allData);
+              setCards(allData);
+              setTotalCommentCount(allData.length);
+            } catch (error) {
+              console.error("Error fetching data:", error);
+            }
+          };
+
+          fetchDataForRcpNum();
+        } catch (error) {
+          console.error("Error fetching comment data:", error);
+        }
       } else {
         console.error("토큰에서 userNum 정보를 찾을 수 없습니다.");
       }
     }
-  }, [currentPage, userToken]);
+  };
+
+  useEffect(() => {
+    fetchData(buttonType);
+  }, [buttonType]);
 
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
   };
 
-  const handleButtonClick = (buttonType) => {
-    // 버튼 클릭 로직 추가
+  const handleButtonClick = (type) => {
+    setButtonType(type);
+    setCurrentPage(0);
   };
 
   const offset = currentPage * cardsPerPage;
@@ -78,35 +92,50 @@ const MyCommentList = () => {
         <div>
           <button
             className={`my-recipe-button ${
-              activeButton === "my-rccomment-button" ? "active" : ""
+              buttonType === "recipe" ? "active" : ""
             }`}
-            onClick={() => handleButtonClick("my-recipe-button")}
+            onClick={() => handleButtonClick("recipe")}
           >
             레시피
           </button>
           <button
             className={`my-party-button ${
-              activeButton === "my-ptcomment-button" ? "active" : ""
+              buttonType === "party" ? "active" : ""
             }`}
-            onClick={() => handleButtonClick("my-party-button")}
+            onClick={() => handleButtonClick("party")}
           >
             축하파티
           </button>
         </div>
         <p className="my-comment-list-total-count">
-          전체 {totalRecipeCount} 개{" "}
+          전체 {totalCommentCount} 개{" "}
         </p>
       </div>
-      <div className="my-comment-card-list">
+      <div
+        className={
+          buttonType === "recipe"
+            ? "my-comment-card-list"
+            : "my-ptcomment-card-list"
+        }
+      >
         {Array.isArray(currentCards) &&
           currentCards.map((card, index) => (
             <div key={index} className="my-comment-card-item">
-              {/* rplContent를 화면에 보여주고, 해당 항목을 클릭하면 댓글 디테일 페이지로 이동 */}
-              <Link to={`/RecipeDetail?rcpNum=${card.rcpNum}`}>
-                {card.rplContent}
-              </Link>
-              <br />
-              <span>{card.rplRegdate}</span>
+              {buttonType === "recipe" ? (
+                <Link to={`/RecipeDetail?rcpNum=${card.rcpNum}`}>
+                  <div className="my-comment-content">{card.rplContent}</div>
+                  <div className="my-comment-date">
+                    <span>{card.rplRegdate}</span>
+                  </div>
+                </Link>
+              ) : (
+                <Link to={`/PartyDetail?postId=${card.postId}`}>
+                  <div className="my-comment-content">{card.content}</div>
+                  <div className="my-comment-date">
+                    <span>{card.createdAt}</span>
+                  </div>
+                </Link>
+              )}
             </div>
           ))}
       </div>
