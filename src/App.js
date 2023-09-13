@@ -19,14 +19,11 @@ import Login from "./pages/Login/Login.js";
 import Signup from "./pages/Signup/Signup.js";
 import MyPage from "./pages/MyPage/MyPage.js";
 import ResetPwd from "./pages/ResetPwd/ResetPwd.js";
-import AdminPage from "./pages/AdminPage/AdminPage.jsx";
-import WithDrawal from "./pages/WithDrawal/WithDrawal.js";
-import ChangePwd from "./pages/ChangePwd/ChangePwd.js";
 import MyComment from "./pages/MyPage/MyComment.js";
 import MyContent from "./pages/MyPage/MyContent.js";
 
 function App() {
-  const [token, setToken] = useState(localStorage.getItem("login-token")); // token 상태 추가
+  const [token, setToken] = useState(localStorage.getItem('login-token')); // token 상태 추가
 
   const handleTokenChanged = (newToken) => {
     console.log("새 토큰: " + newToken);
@@ -48,7 +45,7 @@ function App() {
         <Route path="/partyBoard" element={<PartyBoard />} />
         <Route path="/partyDetail" element={<PartyDetail />} />
         <Route path="/partyWrite" element={<PartyWrite />}/>
-        <Route path="/partyWrite" element={<PartyUpdate />}/>
+        <Route path="/partyUpdate" element={<PartyUpdate />}/>
         <Route path="/login" element={<Login tokenChanged={handleTokenChanged} />}/>
         <Route path="/signup" element={<Signup />} />
         <Route path="/myPage" element={<MyPage />} />

@@ -12,28 +12,23 @@ const RecipeBoard = () => {
       <div className='container'>
             {/* 메인 이미지 :  가장 좋아요가 많은 이미지가 출력된다. */}
           <div className='RecipeBoard-mainImg'>
-          
               <MainImg/>
-            </div>
+          </div>
 
-            {/* 이미지 카테고리 */}
-            <p style={titleStyle}>카테고리</p>
-          {/* <ImageCategory categories={ImagesCategories} />*/}
+          {/* 이미지 카테고리 */}
+          <p style={titleStyle}>카테고리</p>
+          <PetTypeImageCategory/>
 
-            <PetTypeImageCategory/>
-
-              {/* 쉐프리스트 카테고리 : card list  + slider 적용 */}
-              <p  style={titleStyle }>쉐프 소개</p>
-             <UserImageCategory/>
-
-
+          {/* 쉐프리스트 카테고리 */}
+          <p  style={titleStyle }>쉐프 소개</p>
+          <UserImageCategory/>
 
           {/* 레시피  검색창 */}
-                <SearchBar />
+          <SearchBar />
                   
-              {/* 레시피 전체 리스트 출력됨 */}
-              <BoardRecipeCardList/>
-              </div>
+          {/* 레시피 전체 리스트 출력됨 */}
+          <BoardRecipeCardList/>
+      </div>
       
         
       );
