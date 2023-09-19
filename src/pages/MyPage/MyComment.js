@@ -11,8 +11,8 @@ const MyComment = () => {
       <MyPageNav />
       <hr />
       <div className="mypage-content container">
-        <Profile />
-        <MyCommentList />
+      <Profile />
+      <MyCommentList />
       </div>
     </div>
   );
